@@ -3,7 +3,7 @@ services:
     container_name: customerdb  # Name of the MySQL container
     image: mysql  # Use the official MySQL image from Docker Hub
     ports:
-      - 3307:3306  # Map port 3307 on the host to port 3306 in the container
+      - "3307:3306"  # Map port 3307 on the host to port 3306 in the container
     environment:
       MYSQL_ROOT_PASSWORD: root  # Set the root password for MySQL
       MYSQL_DATABASE: customerdb  # Create a database named 'customerdb'
@@ -16,7 +16,7 @@ services:
     networks:
       - wrkspot  # Connect this service to the 'wrkspot' network
 
-  accounts:
+  customer:
     image: "panmandharshaddev/customer:v1"  # Use the custom image for the customer microservice
     container_name: customer-ms  # Name of the customer microservice container
     ports:
