@@ -79,6 +79,24 @@ customer_service/
     docker-compose up
     ```
 
+### Docker compose instructions:
+Clone the repository
+```bash
+git clone https://github.com/PanmandHarshad/wrkspot.git
+```
+Go to customer directory
+```bash
+cd customer
+```
+Pull docker images using docker compose
+```bash
+docker compose pull
+```
+Start the application in detached mode
+```bash
+docker compose up -d
+```
+
 ## Project Details
 
 ### Configuration
