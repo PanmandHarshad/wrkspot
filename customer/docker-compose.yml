@@ -1,0 +1,42 @@
+services:
+  customerdb:
+    container_name: customerdb  # Name of the MySQL container
+    image: mysql  # Use the official MySQL image from Docker Hub
+    ports:
+      - 3307:3306  # Map port 3307 on the host to port 3306 in the container
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # Set the root password for MySQL
+      MYSQL_DATABASE: customerdb  # Create a database named 'customerdb'
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]  # Command to check if MySQL is healthy
+      timeout: 10s  # Timeout for the health check
+      retries: 10  # Number of retries before marking the service as unhealthy
+      interval: 10s  # Interval between health checks
+      start_period: 10s  # Start period before the health check starts
+    networks:
+      - wrkspot  # Connect this service to the 'wrkspot' network
+
+  accounts:
+    image: "panmandharshaddev/customer:v1"  # Use the custom image for the customer microservice
+    container_name: customer-ms  # Name of the customer microservice container
+    ports:
+      - "8080:8080"  # Map port 8080 on the host to port 8080 in the container
+    environment:
+      SPRING_APPLICATION_NAME: "customer"  # Set Spring application name
+      SPRING_DATASOURCE_URL: "jdbc:mysql://customerdb:3306/customerdb"  # JDBC URL for connecting to the MySQL database
+      SPRING_PROFILES_ACTIVE: prod  # Set the active Spring profile to 'prod'
+      SPRING_DATASOURCE_USERNAME: root  # Set the username for the database connection
+      SPRING_DATASOURCE_PASSWORD: root  # Set the password for the database connection
+    depends_on:
+      customerdb:
+        condition: service_healthy  # Wait for the customerdb service to be healthy before starting
+    deploy:
+      resources:
+        limits:
+          memory: 700m  # Limit the container's memory usage to 700MB
+    networks:
+      - wrkspot  # Connect this service to the 'wrkspot' network
+
+networks:
+  wrkspot:
+    driver: "bridge"  # Use the bridge driver to create a network named 'wrkspot'
